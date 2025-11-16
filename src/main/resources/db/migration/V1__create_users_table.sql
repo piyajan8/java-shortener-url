@@ -1,0 +1,10 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    uid VARCHAR(46) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(60) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_email ON users(email);
+CREATE INDEX idx_user_id ON users(uid)
