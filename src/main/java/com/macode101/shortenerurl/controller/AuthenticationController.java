@@ -4,6 +4,8 @@ import com.macode101.shortenerurl.dto.AuthResponse;
 import com.macode101.shortenerurl.dto.LoginRequest;
 import com.macode101.shortenerurl.dto.RegisterRequest;
 import com.macode101.shortenerurl.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Authentication")
 public class AuthenticationController {
     
     private final AuthenticationService authenticationService;
@@ -23,12 +26,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = authenticationService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login with existing credentials")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authenticationService.login(request);
         return ResponseEntity.ok(response);

@@ -10,7 +10,11 @@ public class SecurityUrlPermit {
         return List.of(
                 "/api/register",
                 "/api/login",
-                "/r/**"
+                "/r/**",
+                "/v3/api-docs",
+                "/v3/api-docs/**",
+                "/swagger-ui.html",
+                "/swagger-ui/**"
         );
     }
 }

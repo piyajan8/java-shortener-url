@@ -118,6 +118,7 @@ public class ExceptionTranslatorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        logger.error("Unexpected error occurred", ex);
         ErrorResponse error = new ErrorResponse(
             "An unexpected error occurred",
             HttpStatus.INTERNAL_SERVER_ERROR.value(),

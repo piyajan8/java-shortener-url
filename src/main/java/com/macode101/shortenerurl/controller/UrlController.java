@@ -7,6 +7,9 @@ import static com.macode101.shortenerurl.security.AuthorizeConstants.ADMIN;
 import static com.macode101.shortenerurl.security.AuthorizeConstants.USER;
 import com.macode101.shortenerurl.service.UrlService;
 import com.macode101.shortenerurl.util.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "URL Management")
+@SecurityRequirement(name = "bearerAuth")
 public class UrlController {
     
     private final UrlService urlService;
@@ -33,6 +38,7 @@ public class UrlController {
 
     @PostMapping("/shorten")
     @PreAuthorize("hasAnyAuthority('" + USER + "', '" + ADMIN + "')")
+    @Operation(summary = "Create a shortened URL")
     public ResponseEntity<ShortenUrlResponse> shortenUrl(@Valid @RequestBody ShortenUrlRequest request) {
         String userId = SecurityUtils.getCurrentUserLogin();
         ShortenUrlResponse response = urlService.createShortUrl(request.originalUrl(), userId);
@@ -42,6 +48,7 @@ public class UrlController {
 
     @GetMapping("/urls")
     @PreAuthorize("hasAnyAuthority('" + USER + "', '" + ADMIN + "')")
+    @Operation(summary = "List your shortened URLs")
     public ResponseEntity<List<UrlListResponse>> getUserUrls() {
         String userId = SecurityUtils.getCurrentUserLogin();
         List<UrlListResponse> urls = urlService.getUserUrls(userId);
@@ -51,6 +58,7 @@ public class UrlController {
 
     @DeleteMapping("/urls/{id}")
     @PreAuthorize("hasAnyAuthority('" + USER + "', '" + ADMIN + "')")
+    @Operation(summary = "Delete (deactivate) a shortened URL")
     public ResponseEntity<Void> deleteUrl(@Valid @PathVariable Long id) {
         String userId = SecurityUtils.getCurrentUserLogin();
         urlService.deleteUrl(id, userId);
