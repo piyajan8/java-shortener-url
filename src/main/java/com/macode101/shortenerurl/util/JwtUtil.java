@@ -69,7 +69,7 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new UnauthorizedException("Invalid JWT token: " + e.getMessage());
         }
     }

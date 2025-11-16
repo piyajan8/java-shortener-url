@@ -1,5 +1,6 @@
 package com.macode101.shortenerurl.util;
 
+import com.macode101.shortenerurl.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -69,17 +70,17 @@ class JwtUtilTest {
     }
 
     @Test
-    void validateTokenWithInvalidTokenShouldReturnFalse() {
-        boolean isValid = jwtUtil.validateToken("invalid.token.here");
-
-        assertFalse(isValid);
+    void validateTokenWithInvalidTokenShouldReturnUnauthorizedException() {
+        assertThrows(UnauthorizedException.class,
+                () -> jwtUtil.validateToken("invalid.token.here")
+        );
     }
 
     @Test
-    void validateTokenWithNullTokenShouldReturnFalse() {
-        boolean isValid = jwtUtil.validateToken(null);
-
-        assertFalse(isValid);
+    void validateTokenWithNullTokenShouldReturnUnauthorizedException() {
+        assertThrows(UnauthorizedException.class,
+                () -> jwtUtil.validateToken(null)
+        );
     }
 
     @Test
@@ -92,7 +93,7 @@ class JwtUtilTest {
     }
 
     @Test
-    void isTokenExpiredWithExpiredTokenShouldReturnTrue() throws InterruptedException {
+    void isTokenExpiredWithExpiredTokenShouldReturnUnauthorizedException() throws InterruptedException {
         JwtUtil shortExpirationJwtUtil = new JwtUtil();
         ReflectionTestUtils.setField(shortExpirationJwtUtil, "secret", TEST_SECRET);
         ReflectionTestUtils.setField(shortExpirationJwtUtil, "expiration", 1L);
@@ -100,9 +101,7 @@ class JwtUtilTest {
         String token = shortExpirationJwtUtil.generateToken("123", "test@example.com", List.of("USER"));
         Thread.sleep(10);
 
-        boolean isExpired = shortExpirationJwtUtil.isTokenExpired(token);
-
-        assertTrue(isExpired);
+        assertThrows(UnauthorizedException.class, () -> jwtUtil.validateToken(token));
     }
 
     @Test
@@ -123,8 +122,6 @@ class JwtUtilTest {
         String token = shortExpirationJwtUtil.generateToken("123", "test@example.com", List.of("USER"));
         Thread.sleep(10);
 
-        boolean isValid = shortExpirationJwtUtil.validateToken(token);
-
-        assertFalse(isValid);
+        assertThrows(UnauthorizedException.class, () -> jwtUtil.validateToken(token));
     }
 }
